@@ -2,11 +2,114 @@
 
 import { Request, Response, NextFunction } from "express";
 import createHttpError from "http-errors";
+import User from "./userModel";
+import jwt from "jsonwebtoken";
+import { config } from "../../config/config";
 
-export const exampleController = (
+export const register = async (
   req: Request,
   res: Response,
   next: NextFunction
 ) => {
-  res.status(200).json({ message: "Example Controller" });
+  try {
+    const { email, password } = req.body;
+
+    const user = new User({ email, password });
+
+    await user.save();
+
+    res.status(201).json(user);
+  } catch (error) {
+    next(createHttpError(400, error as Error));
+  }
+};
+
+export const login = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const { email, password } = req.body;
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    // You should use a proper hashing function for passwords (e.g., bcrypt)
+    if (user.password !== password) {
+      throw new Error("Invalid password");
+    }
+
+    // Generate JWT token
+    const authToken = jwt.sign(
+      { _id: user._id, email: user.email }, // Payload
+      config.JWT_SECRET as string, // Secret
+      { expiresIn: "1h" } // Expiration time
+    );
+
+    res.status(200).json({ auth_token: authToken, user });
+  } catch (error) {
+    next(createHttpError(400, error as Error));
+  }
+};
+
+export const uploadData = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const {
+      firstName,
+      lastName,
+      email,
+      grade,
+      skills,
+      interests,
+      projects,
+      experiences,
+    } = req.body;
+
+    const userDetails = await User.findById(req.user._id);
+
+    if (!userDetails) {
+      throw new Error("User not found");
+    }
+
+    userDetails.firstName = firstName;
+    userDetails.lastName = lastName;
+    userDetails.email = email;
+    userDetails.grade = grade;
+    userDetails.skills = skills;
+    userDetails.interests = interests;
+    userDetails.projects = projects;
+    userDetails.experiences = experiences;
+
+    await userDetails.save();
+
+    res.status(200).json(userDetails);
+  } catch (error) {
+    next(createHttpError(400, error as Error));
+  }
+};
+
+export const getUser = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  try {
+    const userDetails = await User.findById(req.user._id);
+
+    if (!userDetails) {
+      throw new Error("User not found");
+    }
+
+    res.status(200).json(userDetails);
+  } catch (error) {
+    next(createHttpError(400, error as Error));
+  }
 };
