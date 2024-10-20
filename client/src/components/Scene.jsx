@@ -23,9 +23,8 @@ const Scene = () => {
         minPolarAngle={THREE.MathUtils.degToRad(78)}
         enableZoom={false}
       />
-      <Avatar position={[0, -4.6, 2]} scale={3.2} />
+      <Avatar position={[0, -4.6, 2]} scale={3.3} />
       <Environment preset="dawn" />
-
       <pointLight
         ref={pointRef}
         position={[1, -3, 2]}

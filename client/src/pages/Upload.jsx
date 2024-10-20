@@ -135,8 +135,44 @@ const Upload = () => {
     setProjects(newProjects);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const data = {
+      firstName,
+      lastName,
+      email,
+      phone,
+      grade: "A+",
+      skills,
+      interests,
+      experiences: pastExperiences,
+      projects,
+    };
+
+    console.log(data);
+
+    try {
+      const response = await axios.put(
+        "http://localhost:8080/api/users",
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            auth_token: localStorage.getItem("auth_token") || "",
+          },
+        }
+      );
+      if (response.status === 200) {
+        alert("Data submitted successfully");
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  };
+
   return (
-    <div className="bg-white min-h-screen">
+    <div className="bg-white mt-12 min-h-screen">
       <header className="absolute inset-x-0 top-0 z-50">
         <nav
           aria-label="Global"
@@ -252,7 +288,7 @@ const Upload = () => {
               OR
             </h2>
           </div>
-          <form className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label className="block text-gray-700 font-semibold">
