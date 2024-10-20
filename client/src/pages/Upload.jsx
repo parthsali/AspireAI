@@ -165,6 +165,10 @@ const Upload = () => {
       );
       if (response.status === 200) {
         alert("Data submitted successfully");
+        localStorage.removeItem("user")
+        
+      
+        localStorage.setItem("user", JSON.stringify(response.data))
       }
     } catch (error) {
       console.error("Error submitting form:", error);

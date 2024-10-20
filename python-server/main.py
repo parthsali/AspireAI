@@ -206,13 +206,7 @@ also give me roadmap in form timeline or steps.
         # Call the AI model (using the pre-defined ask_gemini function)
         response = ask_gemini(prompt)
 
-        # Initialize the roadmap HTML
         
-
-        # Split the response into sections
-        
-
-        # Loop through sections and add appropriate HTML tags
        
         
 

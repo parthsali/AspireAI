@@ -7,7 +7,7 @@ const Roadmap = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const userDetails = JSON.parse(localStorage.getItem("user"));
+    const userDetails = JSON.parse(localStorage.getItem("user")); 
     const reqBody = {
       name: userDetails?.firstName || "User",
       prompt: "Create a personalized career roadmap based on the user's data.",
